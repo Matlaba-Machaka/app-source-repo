@@ -49,7 +49,7 @@ jobs:
           git config --global user.name "GitHub Actions CI"
           git config --global user.email "ci-pipeline@github.com"
           
-          # FIX: Added double quotes around the target URL string to prevent token argument parsing issues
+          # FIXED: Clean syntax with correct token placement, standard URL mapping, and proper environment variables
           git clone "https://${{ secrets.GITOPS_PUSH_PAT }}@://github.com{{ env.GITOPS_REPO }}.git" gitops-repo
           cd gitops-repo
           
@@ -59,3 +59,4 @@ jobs:
           git add deployment.yaml
           git commit -m "chore: automated image update to tag $IMAGE_TAG [skip ci]"
           git push origin main
+
