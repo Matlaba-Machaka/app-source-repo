@@ -1,0 +1,61 @@
+name: Secure DevSecOps CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write     
+  contents: read      
+
+env:
+  AZURE_CLIENT_ID: "199d062d-6968-4283-8f02-4adb9171482d"
+  AZURE_TENANT_ID: "c64cd139-e40e-4967-bc0b-1a72021890af"
+  AZURE_SUBSCRIPTION_ID: "dfeda9ee-efce-4dcc-85b9-8f4a50d158ce"
+  ACR_NAME: "acrgitopsprod15524"
+  GITOPS_REPO: "your-github-username/gitops-manifests-repo" # Update this line
+
+jobs:
+  build-and-ship:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login via OIDC (No Secrets)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Authenticate with ACR
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          REGISTRY_URL=${{ env.ACR_NAME }}.azurecr.io
+          
+          docker build -t $REGISTRY_URL/myapp:$IMAGE_TAG .
+          docker push $REGISTRY_URL/myapp:$IMAGE_TAG
+
+      - name: Update GitOps Manifest Repo
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          REGISTRY_URL=${{ env.ACR_NAME }}.azurecr.io
+          
+          git config --global user.name "GitHub Actions CI"
+          git config --global user.email "ci-pipeline@github.com"
+          
+          # Clone the second repository using your PAT secret
+          git clone https://${{ secrets.GITOPS_PUSH_PAT }}@://github.com{{ env.GITOPS_REPO }}.git gitops-repo
+          cd gitops-repo
+          
+          # Dynamically swap out the image string in deployment.yaml
+          sed -i "s|image: .*azurecr.io/myapp:.*|image: $REGISTRY_URL/myapp:$IMAGE_TAG|g" deployment.yaml
+          
+          git add deployment.yaml
+          git commit -m "chore: automated image update to tag $IMAGE_TAG [skip ci]"
+          git push origin main
