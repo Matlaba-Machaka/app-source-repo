@@ -14,7 +14,7 @@ env:
   AZURE_TENANT_ID: "c64cd139-e40e-4967-bc0b-1a72021890af"
   AZURE_SUBSCRIPTION_ID: "dfeda9ee-efce-4dcc-85b9-8f4a50d158ce"
   ACR_NAME: "acrgitopsprod15524"
-  GITOPS_REPO: "your-github-username/gitops-manifests-repo" # Update this line
+  GITOPS_REPO: "Matlaba-Machaka/gitops-manifests-repo" 
 
 jobs:
   build-and-ship:
