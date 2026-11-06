@@ -40,7 +40,7 @@ jobs:
           
           docker build -t $REGISTRY_URL/myapp:$IMAGE_TAG .
           docker push $REGISTRY_URL/myapp:$IMAGE_TAG
-
+          
       - name: Update GitOps Manifest Repo
         run: |
           IMAGE_TAG=${{ github.sha }}
@@ -49,8 +49,8 @@ jobs:
           git config --global user.name "GitHub Actions CI"
           git config --global user.email "ci-pipeline@github.com"
           
-          # Clone the second repository using your PAT secret
-          git clone https://${{ secrets.GITOPS_PUSH_PAT }}@://github.com{{ env.GITOPS_REPO }}.git gitops-repo
+          # FIX: Added double quotes around the target URL string to prevent token argument parsing issues
+          git clone "https://${{ secrets.GITOPS_PUSH_PAT }}@://github.com{{ env.GITOPS_REPO }}.git" gitops-repo
           cd gitops-repo
           
           # Dynamically swap out the image string in deployment.yaml
