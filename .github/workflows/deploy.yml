@@ -14,7 +14,7 @@ env:
   AZURE_TENANT_ID: "c64cd139-e40e-4967-bc0b-1a72021890af"
   AZURE_SUBSCRIPTION_ID: "dfeda9ee-efce-4dcc-85b9-8f4a50d158ce"
   ACR_NAME: "acrgitopsprod15524"
-  GITOPS_REPO: "/Matlaba-Machaka/gitops-manifests-repo" 
+  GITOPS_REPO: "Matlaba-Machaka/gitops-manifests-repo" 
 
 jobs:
   build-and-ship:
@@ -52,8 +52,8 @@ jobs:
           git config --global user.name "GitHub Actions CI"
           git config --global user.email "ci-pipeline@github.com"
           
-          # Verified standard URL configuration using mapped environment strings
-          git clone "https://${GITOPS_PAT}@://github.com/${GITOPS_TARGET}.git" gitops-repo
+          # Cleaned up authentication protocol and slash placement
+          git clone "https://x-access-token:${GITOPS_PAT}@github.com/${GITOPS_TARGET}.git" gitops-repo
           cd gitops-repo
           
           # Dynamically swap out the image string in deployment.yaml
