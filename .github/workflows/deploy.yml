@@ -42,6 +42,9 @@ jobs:
           docker push $REGISTRY_URL/myapp:$IMAGE_TAG
           
       - name: Update GitOps Manifest Repo
+        env:
+          GITOPS_PAT: ${{ secrets.GITOPS_PUSH_PAT }}
+          GITOPS_TARGET: ${{ env.GITOPS_REPO }}
         run: |
           IMAGE_TAG=${{ github.sha }}
           REGISTRY_URL=${{ env.ACR_NAME }}.azurecr.io
@@ -49,8 +52,8 @@ jobs:
           git config --global user.name "GitHub Actions CI"
           git config --global user.email "ci-pipeline@github.com"
           
-          # FIXED: Clean syntax with correct token placement, standard URL mapping, and proper environment variables
-          git clone "https://${{ secrets.GITOPS_PUSH_PAT }}@://github.com{{ env.GITOPS_REPO }}.git" gitops-repo
+          # Cleaned up Git URL syntax using standard environment mapping variables
+          git clone "https://${GITOPS_PAT}@://github.com{GITOPS_TARGET}.git" gitops-repo
           cd gitops-repo
           
           # Dynamically swap out the image string in deployment.yaml
