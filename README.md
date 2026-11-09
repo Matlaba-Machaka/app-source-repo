@@ -142,7 +142,3 @@ To verify that ArgoCD prevents manual configuration drift:
 2. Observe ArgoCD detect the drift and immediately reconcile the replica count back to the declarative value defined in `gitops-manifests-repo`.
 
 ---
-
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
