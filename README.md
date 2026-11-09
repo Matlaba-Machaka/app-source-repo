@@ -142,3 +142,31 @@ To verify that ArgoCD prevents manual configuration drift:
 2. Observe ArgoCD detect the drift and immediately reconcile the replica count back to the declarative value defined in `gitops-manifests-repo`.
 
 ---
+
+
+## 📸 Screenshots & Proof of Execution
+
+
+### 1. GitHub Actions CI Pipeline (OIDC Login & ACR Push)
+*Successful workflow run authenticating via OIDC token exchange, pushing the image to ACR, and updating the manifest tag.*
+
+<img width="1892" height="1093" alt="Pipeline-Green" src="https://github.com/user-attachments/assets/56a23b3f-e371-4df9-b7fe-28cb1bc14e16" />
+
+
+### 2. Automated Manifest Update (`gitops-manifests-repo`)
+*Automated commit updating the container image tag in the declarative Kustomize overlay.*
+
+<img width="1912" height="1188" alt="ArgoCD" src="https://github.com/user-attachments/assets/942497ee-f8ca-4444-a864-58bb26383997" />
+
+
+
+### 3. Self-Healing Drift Detection in Action
+*ArgoCD detecting manual `kubectl scale` drift and automatically reconciling replicas back to the Git baseline.*
+
+<img width="1912" height="1187" alt="ArgoCD-01" src="https://github.com/user-attachments/assets/d5824f4e-5235-4f05-a21e-f379345715d8" />
+
+### 4. Workflow 
+
+<img width="612" height="1087" alt="WorkFlow-01" src="https://github.com/user-attachments/assets/ba9fb0ec-23d1-40b2-91d5-72054d88b5f6" />
+
+
